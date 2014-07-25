@@ -1,0 +1,58 @@
+These are the QML bindings and an example app for the push notifications API.
+
+
+= Building =
+
+The build system is cmake:
+
+    $ mkdir -p _build
+    $ cd _build
+    $ cmake ..
+    $ make
+
+
+= Running =
+
+The example app can be run from the development branch without installing:
+
+    $ env APP_ID=com.ubuntu.developer.ralsina.hello_hello qmlscene src/example/ubuntu-push-example.qml
+
+
+= Unit tests =
+
+To run the unit tests, you can use the commands below:
+
+    $ make test
+
+      - or -
+
+    $ ctest
+
+
+= Automated UI tests =
+
+ubuntu-push-qml uses autopilot (https://launchpad.net/autopilot) to test its UI.
+To run the tests, you will need to install python-autopilot and libautopilot-qt.
+Then do the following:
+
+    $ cd tests/autopilot/
+    $ autopilot run ubuntu_push_qml
+
+You can get a list of all available tests with the following command:
+
+    $ autopilot list ubuntu_push_qml
+
+
+= Code coverage =
+
+To generate a report with detailed code coverage, you need to re-run cmake with
+"CMAKE_BUILD_TYPE=coverage":
+
+    $ cmake -DCMAKE_BUILD_TYPE=coverage .
+    $ make
+    $ make test
+    $ make coverage
+
+This will generate a coverage report in XML format (coverage.xml) and an
+interactive human-readable report in HTML format (coveragereport/index.html).
+

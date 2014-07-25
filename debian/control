@@ -1,0 +1,55 @@
+Source: ubuntu-push-qml
+Section: x11
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+Build-Depends: cmake (>= 2.8.9),
+               debhelper (>= 9),
+               dh-translations,
+               hardening-wrapper,
+               python,
+               qt5-default,
+               qt5-qmake,
+               qtbase5-dev,
+               qtbase5-private-dev,
+               qtdeclarative5-dev,
+               qtdeclarative5-private-dev,
+               qtdeclarative5-qtquick2-plugin,
+               qtdeclarative5-test-plugin,
+               qtdeclarative5-ubuntu-ui-toolkit-plugin,
+               xvfb,
+Standards-Version: 3.9.4
+Homepage: https://launchpad.net/ubuntu-push-qml
+Vcs-Bzr: https://code.launchpad.net/~ubuntu-push-hackers/ubuntu-push-qml/trunk
+
+Package: ubuntu-push-example
+Architecture: any
+Multi-Arch: foreign
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         qtdeclarative5-qtquick2-plugin,
+         qtdeclarative5-ubuntu-push-notifications-plugin (= ${binary:Version}),
+         qtdeclarative5-ubuntu-ui-toolkit-plugin,
+Description: Ubuntu Push Notifications Example
+ A simple QML only example client.
+
+Package: qtdeclarative5-ubuntu-push-notifications-plugin
+Architecture: any
+Multi-Arch: same
+Depends: ${misc:Depends},
+         ${shlibs:Depends},
+         qtdeclarative5-qtquick2-plugin,
+         qtdeclarative5-ubuntu-ui-toolkit-plugin,
+Description: Ubuntu Push Notifications QML plugin
+ Register, receive and send push notifications.
+
+Package: ubuntu-push-notifications-autopilot
+Architecture: all
+Multi-Arch: foreign
+Depends: ${misc:Depends},
+         libautopilot-qt (>= 1.4),
+         libqt5test5,
+         ubuntu-ui-toolkit-autopilot,
+         ubuntu-push-example (>= ${binary:Version}),
+Description: Ubuntu Push Notifications autopilot tests
+ Register, receive and send push notifications.
+

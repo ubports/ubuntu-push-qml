@@ -1,0 +1,2 @@
+module Ubuntu.PushNotifications
+plugin UbuntuPushNotifications

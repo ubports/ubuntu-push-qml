@@ -1,0 +1,15 @@
+[Desktop Entry]
+Version=1.0
+Name=tr("Ubuntu Push Notification Example")
+GenericName=tr("Push Notification Example")
+Comment=tr("Push notifications around")
+Type=Application
+Icon=ubuntu-push-example
+Exec=@EXEC
+Terminal=false
+Categories=Network;WebBrowser;
+Keywords=Internet;WWW;Browser;Web;Explorer
+X-Ubuntu-Touch=true
+X-Ubuntu-Gettext-Domain=ubuntu-push-example
+X-Ubuntu-Single-Instance=true
+X-Screenshot=@CMAKE_INSTALL_FULL_DATADIR@/ubuntu-push-example/screenshot.png

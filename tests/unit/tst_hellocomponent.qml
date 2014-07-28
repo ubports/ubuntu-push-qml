@@ -4,37 +4,27 @@ import Ubuntu.Components 0.1
 import Ubuntu.PushNotifications 0.1
 import Ubuntu.ChatClientPushExample 0.1
 
-// See more details @ http://qt-project.org/doc/qt-5.0/qtquick/qml-testcase.html
+TestCase {
+    name: "HelloComponent"
 
-// Execute tests with:
-//   qmltestrunner
+    ChatClient {
+        id: chatClient
+        nick: "b"
+    }
 
-Item {
-    TestCase {
-        name: "HelloComponent"
+    function init() {
+    }
 
-        function init() {
-            console.debug(">> init");
-            console.debug("<< init");
-        }
+    function cleanup() {
+    }
 
-        function cleanup() {
-            console.debug(">> cleanup");
-            console.debug("<< cleanup");
-        }
+    function initTestCase() {
+    }
 
-        function initTestCase() {
-            console.debug(">> initTestCase");
-            console.debug("<< initTestCase");
-        }
+    function cleanupTestCase() {
+    }
 
-        function cleanupTestCase() {
-            console.debug(">> cleanupTestCase");
-            console.debug("<< cleanupTestCase");
-        }
-
-        function test_canReadAndWriteText() {
-            compare("a","a","expected did not equal result");
-        }
+    function test_canReadAndWriteText() {
+        compare(chatClient.nick, "b")
     }
 }

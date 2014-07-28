@@ -16,6 +16,9 @@ PushClient::PushClient(QObject *parent) :
 }
 
 void PushClient::registerApp(QString appid) {
+    if (appid == this->appid || appid == "")
+        return;
+
     this->appid = appid;
 
     pkgname = appid.split("_").at(0);

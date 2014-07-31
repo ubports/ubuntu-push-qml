@@ -3,6 +3,7 @@ Section: x11
 Priority: optional
 Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
 Build-Depends: cmake (>= 2.8.9),
+               dbus-test-runner,
                debhelper (>= 9),
                dh-translations,
                hardening-wrapper,

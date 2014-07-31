@@ -1,15 +1,22 @@
-set(XVFB_COMMAND)
 find_program(XVFBRUN xvfb-run)
 if(XVFBRUN)
   set(XVFB_COMMAND ${XVFBRUN} -s "-screen 0 640x480x24" -a)
 else()
-  message(WARNING "Cannot find xvfb-run.")
+  message(FATAL_ERROR "Cannot find xvfb-run.")
+endif()
+
+find_program(DBUS_TEST_RUNNER dbus-test-runner)
+if(DBUS_TEST_RUNNER)
+  set(DBUS_COMMAND ${DBUS_TEST_RUNNER} --task)
+else()
+  message(FATAL_ERROR "Cannot find dbus-test-runner.")
 endif()
 
 set(TEST tst_QmlTests)
 add_executable(${TEST} tst_QmlTests.cpp)
 qt5_use_modules(${TEST} Core Qml Quick Test QuickTest)
-add_test(${TEST} ${XVFB_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/${TEST} -import ${CMAKE_BINARY_DIR}/src)
+add_test(${TEST} ${XVFB_COMMAND} ${DBUS_COMMAND} ${CMAKE_CURRENT_BINARY_DIR}/${TEST})
+set_property(TEST ${TEST} PROPERTY ENVIRONMENT "QML2_IMPORT_PATH=${CMAKE_BINARY_DIR}/src")
 
 # copy qml files under test to build dir
 set(out_qml_files)

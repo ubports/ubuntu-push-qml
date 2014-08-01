@@ -13,7 +13,7 @@ public:
     void registerApp(QString appid);
     QString getStatus() {return this->status;};
 
-    Q_PROPERTY(QString appid WRITE registerApp MEMBER appid);
+    Q_PROPERTY(QString appId WRITE registerApp MEMBER appId);
     Q_PROPERTY(QString token MEMBER token);
     Q_PROPERTY(QStringList notifications NOTIFY newNotifications MEMBER notifications);
     Q_PROPERTY(QString status READ getStatus);
@@ -24,11 +24,11 @@ signals:
 
 public slots:
     void getNotifications();
-    void notified(QString appid);
+    void notified(QString appId);
     void emitError();
 
 private:
-    QString appid;
+    QString appId;
     QString pkgname;
     QString token;
     QString status;

@@ -33,7 +33,7 @@ MainView {
             newNotifications.connect(messageList.handle_notifications)
             error.connect(messageList.handle_error)
         }
-        appid: "com.ubuntu.developer.push.hello_hello"
+        appId: "com.ubuntu.developer.push.hello_hello"
 
     }
 

@@ -16,24 +16,24 @@ PushClient::PushClient(QObject *parent) :
 {
 }
 
-void PushClient::registerApp(QString appid) {
-    if (appid == this->appid || appid == "")
+void PushClient::registerApp(QString appId) {
+    if (appId == this->appId || appId == "")
         return;
 
-    this->appid = appid;
+    this->appId = appId;
 
-    pkgname = appid.split("_").at(0);
-    pkgname = pkgname.replace(".","_2e").replace("-","_2f");
+    pkgname = appId.split("_").at(0);
+    pkgname = pkgname.replace(".","_2e").replace("-","_2d");
 
     QString register_path(PUSH_PATH);
     register_path += "/" + pkgname;
 
-    qDebug() << "registering:" << appid;
+    qDebug() << "registering:" << appId;
     QDBusConnection bus = QDBusConnection::sessionBus();
 
     // Register to the push client
     QDBusMessage message = QDBusMessage::createMethodCall(PUSH_SERVICE, register_path , PUSH_IFACE, "Register");
-    message << appid;
+    message << appId;
     QDBusMessage token = bus.call(message);
     if (token.type() == QDBusMessage::ErrorMessage) {
         qDebug() << "Error registering:" << token.errorMessage();
@@ -71,7 +71,7 @@ void PushClient::getNotifications() {
     QString path(POSTAL_PATH);
     path += "/" + pkgname;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "PopAll");
-    message << this->appid;
+    message << this->appId;
     QDBusMessage reply = bus.call(message);
     if (reply.type() == QDBusMessage::ErrorMessage) {
         emit error(reply.errorMessage());

@@ -24,6 +24,7 @@ void PushClient::registerApp(QString appId) {
 
     pkgname = appId.split("_").at(0);
     pkgname = pkgname.replace(".","_2e").replace("-","_2d");
+    emit appIdChanged(appId);
 
     QString register_path(PUSH_PATH);
     register_path += "/" + pkgname;
@@ -51,10 +52,14 @@ void PushClient::registerApp(QString appId) {
 
     // Do an initial fetch
     QTimer::singleShot(200, this, SLOT(getNotifications()));
-    emit appIdChanged(appId);
+    emit tokenChanged(this->token);
 }
 
 QString PushClient::getAppId() {
+    return appId;
+}
+
+QString PushClient::getToken() {
     return appId;
 }
 

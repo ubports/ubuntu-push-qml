@@ -1,4 +1,5 @@
 #include "pushclient.h"
+#include <QDebug>
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusMessage>
 #include <QTimer>
@@ -51,6 +52,7 @@ void PushClient::registerApp(QString appid) {
 
 void PushClient::emitError()
 {
+    qDebug() << "PushClient::emitError" << status;
     emit error(status);
 }
 

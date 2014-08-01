@@ -1,8 +1,4 @@
 {
-    "name": "com.ubuntu.developer.push.ubuntu-push-example",
-    "title": "ubuntu-push-example",
-    "maintainer": "Roberto Alsina <roberto.alsina@canonical.com>",
-    "version": "0.1",
     "architecture": "all",
     "description": "description of ubuntu-push-example",
     "framework": "ubuntu-sdk-14.10-dev2",
@@ -10,10 +6,10 @@
         "hello": {
             "apparmor": "hello.json",
             "desktop": "hello.desktop"
-        },
-        "helloHelper": {
-            "apparmor": "helloHelper-apparmor.json",
-            "push-helper": "helloHelper.json"
         }
-    }
+    },
+    "maintainer": "Roberto Alsina <roberto.alsina@canonical.com>",
+    "name": "com.ubuntu.developer.push.ubuntu-push-example",
+    "title": "ubuntu-push-example",
+    "version": "0.1"
 }

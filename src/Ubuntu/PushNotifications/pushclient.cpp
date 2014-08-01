@@ -39,6 +39,7 @@ void PushClient::registerApp(QString appId) {
     if (token.type() == QDBusMessage::ErrorMessage) {
         qDebug() << "Error registering:" << token.errorMessage();
         status = token.errorMessage();
+        emit statusChanged(status);
         // This has to be delayed because the error signal is not connected yet
         QTimer::singleShot(200, this, SLOT(emitError()));
         return;

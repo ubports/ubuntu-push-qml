@@ -18,13 +18,14 @@ public:
     Q_PROPERTY(QString appId WRITE registerApp READ getAppId NOTIFY appIdChanged);
     Q_PROPERTY(QString token READ getToken NOTIFY tokenChanged);
     Q_PROPERTY(QStringList notifications NOTIFY newNotifications);
-    Q_PROPERTY(QString status READ getStatus);
+    Q_PROPERTY(QString status READ getStatus NOTIFY statusChanged);
 
 signals:
     void newNotifications(QStringList);
     void appIdChanged(QString);
     void error(QString);
     void tokenChanged(QString);
+    void statusChanged(QString);
 
 public slots:
     void getNotifications();

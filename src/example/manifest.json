@@ -1,0 +1,15 @@
+{
+    "architecture": "all",
+    "description": "description of ubuntu-push-example",
+    "framework": "ubuntu-sdk-14.10-dev2",
+    "hooks": {
+        "hello": {
+            "apparmor": "hello.json",
+            "desktop": "hello.desktop"
+        }
+    },
+    "maintainer": "Roberto Alsina <roberto.alsina@canonical.com>",
+    "name": "com.ubuntu.developer.push.ubuntu-push-example",
+    "title": "ubuntu-push-example",
+    "version": "0.1"
+}

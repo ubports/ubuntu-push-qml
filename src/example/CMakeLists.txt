@@ -1,20 +1,56 @@
-project(ubuntu-push-example)
+project(ubuntu-push-example C CXX)
+cmake_minimum_required(VERSION 2.8.9)
 
-include_directories(${Qt5Quick_PRIVATE_INCLUDE_DIRS})
+set (UBUNTU_PROJECT_TYPE "ClickApp" CACHE INTERNAL "Tells QtCreator this is a Click application project")
+set (CMAKE_MODULE_PATH "${CMAKE_CURRENT_SOURCE_DIR}/cmake")
 
-file(GLOB QML_FILES *.qml)
-install(FILES ${QML_FILES} DESTINATION ${CMAKE_INSTALL_DATADIR}/ubuntu-push-example)
+find_package(Qt5Core)
+find_package(Qt5Qml)
+find_package(Qt5Quick)
+#find_package(ubuntu-sdk-libs)
 
-set(DESKTOP_FILE ubuntu-push-example.desktop)
-set(EXEC "qmlscene ${CMAKE_INSTALL_DATADIR}/ubuntu-push-example/${DESKTOP_FILE} %f" )
-configure_file(${DESKTOP_FILE}.in.in ${DESKTOP_FILE}.in @ONLY)
-file(REMOVE ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE})
-file(STRINGS ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE}.in DESKTOP_FILE_CONTENTS)
-foreach(LINE ${DESKTOP_FILE_CONTENTS})
-    string(REGEX REPLACE "tr\\\(\"(.*)\"\\\)" "\\1" LINE "${LINE}")
-    file(APPEND ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE} "${LINE}\n")
-endforeach(LINE)
+#automatically create moc files
+set(CMAKE_AUTOMOC ON)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${DESKTOP_FILE}
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/applications)
+# components PATH
+execute_process(
+    COMMAND dpkg-architecture -qDEB_HOST_MULTIARCH
+    OUTPUT_VARIABLE ARCH_TRIPLET
+    OUTPUT_STRIP_TRAILING_WHITESPACE
+)
+set(QT_IMPORTS_DIR "lib/${ARCH_TRIPLET}")
+
+option(INSTALL_TESTS "Install the tests on make install" on)
+
+set(APP_NAME          ubuntu-push-example)
+set(UBUNTU-PUSH-EXAMPLE_DIR "share/qml/ubuntu-push-example")
+set(MAIN_QML          "ubuntu-push-example.qml")
+set(ICON              "graphics/ubuntu-push-example.png")
+
+#set install paths
+set(CMAKE_INSTALL_PREFIX /)
+set(DATA_DIR /)
+set(DESKTOP_DIR ${DATA_DIR})
+
+set(EXEC "qmlscene $@ ${UBUNTU-PUSH-EXAMPLE_DIR}/${MAIN_QML}")
+
+install(FILES manifest.json DESTINATION ${CMAKE_INSTALL_PREFIX})
+install(DIRECTORY "app/graphics" DESTINATION ${DATA_DIR})
+install(FILES "hello.json" DESTINATION ${DATA_DIR})
+
+add_subdirectory(app)
+add_subdirectory(backend)
+
+add_custom_target("autopilot" chmod +x ${CMAKE_SOURCE_DIR}/app/tests/autopilot/run
+                    COMMAND ${CMAKE_SOURCE_DIR}/app/tests/autopilot/run
+                    DEPENDS ubuntu-push-examplebackend ubuntu-push-examplebackend-qmldir
+                    WORKING_DIRECTORY ./app)
+
+add_custom_target("check" /usr/bin/qmltestrunner -input ${CMAKE_SOURCE_DIR}/app/tests/unit -import ${CMAKE_BINARY_DIR}/backend
+                    DEPENDS ubuntu-push-examplebackend ubuntu-push-examplebackend-qmldir
+                    WORKING_DIRECTORY ./app)
+
+add_custom_target("run" /usr/bin/qmlscene -I ${CMAKE_BINARY_DIR}/backend  ${CMAKE_SOURCE_DIR}/app/ubuntu-push-example.qml
+                    DEPENDS ubuntu-push-examplebackend ubuntu-push-examplebackend-qmldir
+                    WORKING_DIRECTORY ./app)
 

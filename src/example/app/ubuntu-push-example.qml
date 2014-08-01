@@ -2,13 +2,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 import Ubuntu.PushNotifications 0.1
-import Ubuntu.ChatClientPushExample 0.1
-
-/*!
-    \brief MainView with Tabs element.
-           First Tab has a single Label and
-           second Tab has a single ToolbarAction.
-*/
+import Hello 1.0
 
 MainView {
     // objectName for functional testing purposes (autopilot-qt5)
@@ -27,14 +21,18 @@ MainView {
     height: units.gu(75)
     ChatClient {
         id: chatClient
-        onError: messageList.handle_error
-        onRegistered: nickEdit.registered
+        Component.onCompleted: {
+            error.connect(messageList.handle_error)
+            registered.connect(nickEdit.registered)
+        }
     }
 
     PushClient {
         id: pushClient
-        onNewNotifications: messageList.handle_notifications
-        onError: messageList.handle_error
+        Component.onCompleted: {
+            newNotifications.connect(messageList.handle_notifications)
+            error.connect(messageList.handle_error)
+        }
         appid: "com.ubuntu.developer.push.hello_hello"
 
     }
@@ -53,8 +51,11 @@ MainView {
             readOnly = true
             text = "Your nick is " + chatClient.nick
             messageEdit.focus = true
+            messageEdit.enabled = true
         }
-        onAccepted: chatClient.registerNick(text, pushClient.token)
+        onAccepted: {
+            chatClient.registerNick(text, pushClient.token)
+        }
     }
     TextField {
         id: messageEdit
@@ -65,15 +66,20 @@ MainView {
         anchors.rightMargin: units.gu(1)
         anchors.leftMargin: units.gu(.5)
         placeholderText: "Your message"
+        enabled: false
         onAccepted: {
             console.log("sending " + text)
-            messagesModel.insert(0, {
+            var idx = text.indexOf(":")
+            var nick_to = text.substring(0, idx).trim()
+            var msg = text.substring(idx+1, 9999).trim()
+            var i = {
                 "from" :  chatClient.nick,
-                "to" :  "",
-                "type": "sent",
-                "message" : text
-            })
-            chatClient.sendMessage(text, annoyingSwitch.checked)
+                "to" :  nick_to,
+                "message" : msg
+            }
+            chatClient.sendMessage(i, annoyingSwitch.checked)
+            i["type"] = "sent"
+            messagesModel.insert(0, i)
             text = ""
         }
     }
@@ -141,10 +147,11 @@ MainView {
                     anchors.margins: units.gu(.5)
                     Text {
                         id: label
-                        text: "<b>" + from + (from?":":"") + "</b> " + message // FIXME: make better
+                        text: "<b>" + from + (from?":":"") + "</b> " + message
                         wrapMode: Text.Wrap
                         width: parent.width - units.gu(1)
                         x: units.gu(.5)
+                        horizontalAlignment: (type=="sent")?Text.AlignRight:Text.AlignLeft
                     }
                 }
             }

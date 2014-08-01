@@ -90,3 +90,41 @@ void PushClient::getNotifications() {
     qDebug() << "notifications:" << reply.arguments()[0].toStringList();
     emit newNotifications(reply.arguments()[0].toStringList());
 }
+
+QStringList PushClient::getPersistent() {
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    QString path(POSTAL_PATH);
+    path += "/" + pkgname;
+    QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "ListPersistent");
+    message << this->appId;
+    QDBusMessage reply = bus.call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage) {
+        emit error(reply.errorMessage());
+    }
+    return reply.arguments()[0].toStringList();
+}
+
+void PushClient::clearPersistent(QStringList tags) {
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    QString path(POSTAL_PATH);
+    path += "/" + pkgname;
+    QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "ClearPersistent");
+    message << this->appId << tags;
+    QDBusMessage reply = bus.call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage) {
+        emit error(reply.errorMessage());
+    }
+}
+
+void PushClient::setCounter(int count, bool visible) {
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    QString path(POSTAL_PATH);
+    path += "/" + pkgname;
+    QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "setCounter");
+    message << this->appId << count << visible;
+    QDBusMessage reply = bus.call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage) {
+        emit error(reply.errorMessage());
+    }
+}
+

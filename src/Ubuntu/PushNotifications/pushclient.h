@@ -14,11 +14,15 @@ public:
     QString getStatus() {return this->status;};
     QString getAppId();
     QString getToken();
+    QStringList getPersistent();
+    void clearPersistent(QStringList tags);
+    void setCounter(int count, bool visible);
 
     Q_PROPERTY(QString appId WRITE registerApp READ getAppId NOTIFY appIdChanged);
     Q_PROPERTY(QString token READ getToken NOTIFY tokenChanged);
     Q_PROPERTY(QStringList notifications NOTIFY newNotifications);
     Q_PROPERTY(QString status READ getStatus NOTIFY statusChanged);
+    Q_PROPERTY(QStringList persistent READ getPersistent);
 
 signals:
     void newNotifications(QStringList);

@@ -36,7 +36,8 @@ set(EXEC "qmlscene $@ ${UBUNTU-PUSH-EXAMPLE_DIR}/${MAIN_QML}")
 
 install(FILES manifest.json DESTINATION ${CMAKE_INSTALL_PREFIX})
 install(DIRECTORY "app/graphics" DESTINATION ${DATA_DIR})
-install(FILES "hello.json" DESTINATION ${DATA_DIR})
+install(FILES "${CMAKE_PROJECT_NAME}.json" helloHelper-apparmor.json helloHelper.json DESTINATION ${DATA_DIR})
+install(PROGRAMS helloHelper DESTINATION ${DATA_DIR})
 
 add_subdirectory(app)
 add_subdirectory(backend)

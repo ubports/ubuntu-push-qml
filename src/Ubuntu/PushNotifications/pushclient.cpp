@@ -51,6 +51,11 @@ void PushClient::registerApp(QString appId) {
 
     // Do an initial fetch
     QTimer::singleShot(200, this, SLOT(getNotifications()));
+    emit appIdChanged(appId);
+}
+
+QString PushClient::getAppId() {
+    return appId;
 }
 
 void PushClient::emitError()

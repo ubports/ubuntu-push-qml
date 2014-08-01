@@ -17,7 +17,7 @@ public:
 
     Q_PROPERTY(QString appId WRITE registerApp READ getAppId NOTIFY appIdChanged);
     Q_PROPERTY(QString token READ getToken NOTIFY tokenChanged);
-    Q_PROPERTY(QStringList notifications NOTIFY newNotifications MEMBER notifications);
+    Q_PROPERTY(QStringList notifications NOTIFY newNotifications);
     Q_PROPERTY(QString status READ getStatus);
 
 signals:

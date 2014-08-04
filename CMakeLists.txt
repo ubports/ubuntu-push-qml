@@ -61,7 +61,3 @@ set (GETTEXT_PACKAGE "ubuntu-push-qml")
 
 add_subdirectory(po)
 
-install(FILES ubuntu-push-example.svg
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/icons/hicolor/scalable/apps)
-install(FILES screenshot.png
-        DESTINATION ${CMAKE_INSTALL_DATADIR}/ubuntu-push-example)

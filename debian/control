@@ -32,15 +32,3 @@ Depends: ${misc:Depends},
          qtdeclarative5-ubuntu-ui-toolkit-plugin,
 Description: Ubuntu Push Notifications QML plugin
  Register, receive and send push notifications.
-
-Package: ubuntu-push-notifications-autopilot
-Architecture: all
-Multi-Arch: foreign
-Depends: ${misc:Depends},
-         libautopilot-qt (>= 1.4),
-         libqt5test5,
-         ubuntu-ui-toolkit-autopilot,
-         ubuntu-push-example (>= ${binary:Version}),
-Description: Ubuntu Push Notifications autopilot tests
- Register, receive and send push notifications.
-

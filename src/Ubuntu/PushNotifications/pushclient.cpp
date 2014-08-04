@@ -1,5 +1,4 @@
 #include "pushclient.h"
-#include <QDebug>
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusMessage>
 #include <QTimer>
@@ -29,7 +28,6 @@ void PushClient::registerApp(QString appId) {
     QString register_path(PUSH_PATH);
     register_path += "/" + pkgname;
 
-    qDebug() << "registering:" << appId;
     QDBusConnection bus = QDBusConnection::sessionBus();
 
     // Register to the push client
@@ -37,7 +35,6 @@ void PushClient::registerApp(QString appId) {
     message << appId;
     QDBusMessage token = bus.call(message);
     if (token.type() == QDBusMessage::ErrorMessage) {
-        qDebug() << "Error registering:" << token.errorMessage();
         status = token.errorMessage();
         emit statusChanged(status);
         // This has to be delayed because the error signal is not connected yet
@@ -66,7 +63,6 @@ QString PushClient::getToken() {
 
 void PushClient::emitError()
 {
-    qDebug() << "PushClient::emitError" << status;
     emit error(status);
 }
 
@@ -87,7 +83,6 @@ void PushClient::getNotifications() {
     if (reply.type() == QDBusMessage::ErrorMessage) {
         emit error(reply.errorMessage());
     }
-    qDebug() << "notifications:" << reply.arguments()[0].toStringList();
     emit newNotifications(reply.arguments()[0].toStringList());
 }
 

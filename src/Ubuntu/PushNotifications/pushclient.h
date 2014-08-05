@@ -16,16 +16,18 @@ public:
     QString getToken();
     QStringList getPersistent();
     void clearPersistent(QStringList tags);
-    void setCounter(int count, bool visible);
+    void setCount(int count);
+    int getCount();
 
     Q_PROPERTY(QString appId WRITE registerApp READ getAppId NOTIFY appIdChanged);
     Q_PROPERTY(QString token READ getToken NOTIFY tokenChanged);
-    Q_PROPERTY(QStringList notifications NOTIFY newNotifications);
+    Q_PROPERTY(QStringList notifications NOTIFY notificationsChanged);
     Q_PROPERTY(QString status READ getStatus NOTIFY statusChanged);
     Q_PROPERTY(QStringList persistent READ getPersistent);
+    Q_PROPERTY(int count READ getCount WRITE setCount)
 
 signals:
-    void newNotifications(QStringList);
+    void notificationsChanged(QStringList);
     void appIdChanged(QString);
     void error(QString);
     void tokenChanged(QString);
@@ -42,6 +44,7 @@ private:
     QString token;
     QString status;
     QStringList notifications;
+    int counter;
 };
 
 #endif // PUSHCLIENT_H

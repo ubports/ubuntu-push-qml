@@ -83,7 +83,7 @@ void PushClient::getNotifications() {
     if (reply.type() == QDBusMessage::ErrorMessage) {
         emit error(reply.errorMessage());
     }
-    emit newNotifications(reply.arguments()[0].toStringList());
+    emit notificationsChanged(reply.arguments()[0].toStringList());
 }
 
 QStringList PushClient::getPersistent() {
@@ -111,9 +111,11 @@ void PushClient::clearPersistent(QStringList tags) {
     }
 }
 
-void PushClient::setCounter(int count, bool visible) {
+void PushClient::setCount(int count) {
     QDBusConnection bus = QDBusConnection::sessionBus();
     QString path(POSTAL_PATH);
+    bool visible = count != 0;
+    this->counter = count;
     path += "/" + pkgname;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "setCounter");
     message << this->appId << count << visible;
@@ -123,3 +125,6 @@ void PushClient::setCounter(int count, bool visible) {
     }
 }
 
+int PushClient::getCount() {
+    return counter;
+}

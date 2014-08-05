@@ -1,5 +1,3 @@
-project(ubuntu-push-translations)
-
 include(FindGettext)
 find_program(GETTEXT_XGETTEXT_EXECUTABLE xgettext)
 

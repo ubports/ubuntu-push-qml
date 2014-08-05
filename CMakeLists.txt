@@ -47,12 +47,9 @@ add_custom_target(uninstall
 
 add_subdirectory(src)
 
-#enable_testing()
-#add_subdirectory(tests)
-
 file(GLOB_RECURSE I18N_SRC_FILES
      RELATIVE ${CMAKE_CURRENT_SOURCE_DIR}
-     src/example/**.qml src/example/**.desktop.in)
+     example/app/**.qml example/app/**.desktop.in)
 list(SORT I18N_SRC_FILES)
 
 # for dh_translations to extract the domain

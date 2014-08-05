@@ -1,4 +1,5 @@
-Example App for the QML notifications API
+Example App for the QML notifications API. This is an example application
+showing how to use push notifications in Ubuntu Touch devices.
 
 = Running on Ubuntu Touch =
 
@@ -13,7 +14,7 @@ to be used in the emulator or on a real device.
 
 This is more complicated but may be convenient while experimenting:
 
-* Install foobar-declarative FIXME: use real name of the package
+* Install qtdeclarative5-ubuntu-push-notifications-plugin
 * Install ubuntu-push-client
 * Run ubuntu-push-client in trivial helper mode:
 

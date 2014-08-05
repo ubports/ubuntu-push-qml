@@ -23,11 +23,13 @@ public:
     Q_PROPERTY(QString token READ getToken NOTIFY tokenChanged);
     Q_PROPERTY(QStringList notifications NOTIFY notificationsChanged);
     Q_PROPERTY(QString status READ getStatus NOTIFY statusChanged);
-    Q_PROPERTY(QStringList persistent READ getPersistent);
-    Q_PROPERTY(int count READ getCount WRITE setCount)
+    Q_PROPERTY(QStringList persistent READ getPersistent NOTIFY persistentChanged);
+    Q_PROPERTY(int count READ getCount WRITE setCount NOTIFY countChanged)
 
 signals:
+    void countChanged(int);
     void notificationsChanged(QStringList);
+    void persistentChanged(QStringList);
     void appIdChanged(QString);
     void error(QString);
     void tokenChanged(QString);

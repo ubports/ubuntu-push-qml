@@ -109,13 +109,14 @@ void PushClient::clearPersistent(QStringList tags) {
     if (reply.type() == QDBusMessage::ErrorMessage) {
         emit error(reply.errorMessage());
     }
+    emit persistentChanged(getPersistent());
 }
 
 void PushClient::setCount(int count) {
     QDBusConnection bus = QDBusConnection::sessionBus();
     QString path(POSTAL_PATH);
     bool visible = count != 0;
-    this->counter = count;
+    counter = count;
     path += "/" + pkgname;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "setCounter");
     message << this->appId << count << visible;
@@ -123,6 +124,7 @@ void PushClient::setCount(int count) {
     if (reply.type() == QDBusMessage::ErrorMessage) {
         emit error(reply.errorMessage());
     }
+    emit countChanged(counter);
 }
 
 int PushClient::getCount() {

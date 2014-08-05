@@ -30,7 +30,7 @@ MainView {
     PushClient {
         id: pushClient
         Component.onCompleted: {
-            newNotifications.connect(messageList.handle_notifications)
+            notificationsChanged.connect(messageList.handle_notifications)
             error.connect(messageList.handle_error)
         }
         appId: "com.ubuntu.developer.push.hello_hello"

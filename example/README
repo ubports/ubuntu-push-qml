@@ -7,7 +7,7 @@ Since push is currently only meant for Ubuntu Touch devices, this is meant
 to be used in the emulator or on a real device.
 
 * Open the example project in Ubuntu-SDK
-* Build a click file using the correct kit (i386 or armhf)
+* Build a click file
 * Run in the emulator or device
 
 = Running on the desktop =
@@ -20,7 +20,7 @@ This is more complicated but may be convenient while experimenting:
 
 	UBUNTU_PUSH_USE_TRIVIAL_HELPER=1 ./ubuntu-push-client
 
-* Build i386 click package
+* Build click package
 * Install in your desktop:
 
 	sudo click --all-users com.ubuntu.developer.push.ubuntu-push-example_0.1_all.click

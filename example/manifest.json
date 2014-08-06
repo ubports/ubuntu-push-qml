@@ -1,6 +1,6 @@
 {
     "architecture": "all",
-    "description": "description of ubuntu-push-example",
+    "description": "Example app for Ubuntu push notifications.",
     "framework": "ubuntu-sdk-14.10-dev2",
     "hooks": {
         "hello": {

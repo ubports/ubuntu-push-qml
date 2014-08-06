@@ -2,7 +2,7 @@ import QtQuick 2.0
 import Ubuntu.Components 0.1
 import Ubuntu.Components.ListItems 0.1 as ListItem
 import Ubuntu.PushNotifications 0.1
-import Hello 1.0
+import "components"
 
 MainView {
     // objectName for functional testing purposes (autopilot-qt5)
@@ -21,10 +21,8 @@ MainView {
     height: units.gu(75)
     ChatClient {
         id: chatClient
-        Component.onCompleted: {
-            error.connect(messageList.handle_error)
-            registered.connect(nickEdit.registered)
-        }
+        onRegisteredChanged: {nickEdit.registered()}
+        onError: {messageList.handle_error(msg)}
     }
 
     PushClient {
@@ -34,7 +32,6 @@ MainView {
             error.connect(messageList.handle_error)
         }
         appId: "com.ubuntu.developer.push.hello_hello"
-
     }
 
     TextField {
@@ -54,7 +51,8 @@ MainView {
             messageEdit.enabled = true
         }
         onAccepted: {
-            chatClient.registerNick(text, pushClient.token)
+            chatClient.nick = text
+            chatClient.token = pushClient.token
         }
     }
     TextField {

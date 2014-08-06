@@ -1,7 +1,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
-import Hello 1.0
+import "../../components"
 
 // See more details @ http://qt-project.org/doc/qt-5.0/qtquick/qml-testcase.html
 
@@ -10,16 +10,16 @@ import Hello 1.0
 
 Item {
     // The objects
-    MyType {
+    HelloComponent {
         id: objectUnderTest
     }
 
     TestCase {
-        name: "MyType"
+        name: "HelloComponent"
 
         function init() {
             console.debug(">> init");
-            compare("",objectUnderTest.helloWorld,"text was not empty on init");
+            compare("",objectUnderTest.text,"text was not empty on init");
             console.debug("<< init");
         }
 
@@ -39,11 +39,11 @@ Item {
         }
 
         function test_canReadAndWriteText() {
-            var expected = "Hello World 2";
+            var expected = "Hello World";
 
-            objectUnderTest.helloWorld = expected;
+            objectUnderTest.text = expected;
 
-            compare(expected,objectUnderTest.helloWorld,"expected did not equal result");
+            compare(expected,objectUnderTest.text,"expected did not equal result");
         }
     }
 }

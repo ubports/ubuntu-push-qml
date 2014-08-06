@@ -58,7 +58,7 @@ QString PushClient::getAppId() {
 }
 
 QString PushClient::getToken() {
-    return appId;
+    return token;
 }
 
 void PushClient::emitError()

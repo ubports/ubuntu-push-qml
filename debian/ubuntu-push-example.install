@@ -1,6 +1,0 @@
-usr/share/ubuntu-push-example/*.qml
-usr/share/ubuntu-push-example/screenshot.png
-usr/share/applications/ubuntu-push-example.desktop
-usr/share/icons/hicolor/scalable/apps/ubuntu-push-example.svg
-usr/share/locale/*/LC_MESSAGES/ubuntu-push-qml.mo
-usr/lib/*/qt5/qml/Ubuntu/ChatClientPushExample/*

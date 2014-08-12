@@ -12,27 +12,41 @@ public:
     explicit PushClient(QObject *parent = 0);
     void registerApp(QString appid);
     QString getStatus() {return this->status;};
+    QString getAppId();
+    QString getToken();
+    QStringList getPersistent();
+    void clearPersistent(QStringList tags);
+    void setCount(int count);
+    int getCount();
 
-    Q_PROPERTY(QString appid WRITE registerApp MEMBER appid);
-    Q_PROPERTY(QString token MEMBER token);
-    Q_PROPERTY(QStringList notifications NOTIFY newNotifications MEMBER notifications);
-    Q_PROPERTY(QString status READ getStatus);
+    Q_PROPERTY(QString appId WRITE registerApp READ getAppId NOTIFY appIdChanged);
+    Q_PROPERTY(QString token READ getToken NOTIFY tokenChanged);
+    Q_PROPERTY(QStringList notifications NOTIFY notificationsChanged);
+    Q_PROPERTY(QString status READ getStatus NOTIFY statusChanged);
+    Q_PROPERTY(QStringList persistent READ getPersistent NOTIFY persistentChanged);
+    Q_PROPERTY(int count READ getCount WRITE setCount NOTIFY countChanged)
 
 signals:
-    void newNotifications(QStringList);
+    void countChanged(int);
+    void notificationsChanged(QStringList);
+    void persistentChanged(QStringList);
+    void appIdChanged(QString);
     void error(QString);
+    void tokenChanged(QString);
+    void statusChanged(QString);
 
 public slots:
     void getNotifications();
-    void notified(QString appid);
+    void notified(QString appId);
     void emitError();
 
 private:
-    QString appid;
+    QString appId;
     QString pkgname;
     QString token;
     QString status;
     QStringList notifications;
+    int counter;
 };
 
 #endif // PUSHCLIENT_H

@@ -1,8 +1,7 @@
 import QtQuick 2.0
 import QtTest 1.0
 import Ubuntu.Components 0.1
-import Ubuntu.PushNotifications 0.1
-import Ubuntu.ChatClientPushExample 0.1
+import "../../components"
 
 // See more details @ http://qt-project.org/doc/qt-5.0/qtquick/qml-testcase.html
 
@@ -10,11 +9,17 @@ import Ubuntu.ChatClientPushExample 0.1
 //   qmltestrunner
 
 Item {
+    // The objects
+    HelloComponent {
+        id: objectUnderTest
+    }
+
     TestCase {
         name: "HelloComponent"
 
         function init() {
             console.debug(">> init");
+            compare("",objectUnderTest.text,"text was not empty on init");
             console.debug("<< init");
         }
 
@@ -34,7 +39,12 @@ Item {
         }
 
         function test_canReadAndWriteText() {
-            compare("a","a","expected did not equal result");
+            var expected = "Hello World";
+
+            objectUnderTest.text = expected;
+
+            compare(expected,objectUnderTest.text,"expected did not equal result");
         }
     }
 }
+

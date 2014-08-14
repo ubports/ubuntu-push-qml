@@ -1,5 +1,4 @@
 #include "pushclient.h"
-#include <QDebug>
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusMessage>
 #include <QTimer>
@@ -16,41 +15,50 @@ PushClient::PushClient(QObject *parent) :
 {
 }
 
-void PushClient::registerApp(QString appid) {
-    this->appid = appid;
+void PushClient::registerApp(QString appId) {
+    if (appId == this->appId || appId == "")
+        return;
 
-    pkgname = appid.split("_").at(0);
-    pkgname = pkgname.replace(".","_2e").replace("-","_2f");
+    this->appId = appId;
+
+    pkgname = appId.split("_").at(0);
+    pkgname = pkgname.replace(".","_2e").replace("-","_2d");
+    emit appIdChanged(appId);
 
     QString register_path(PUSH_PATH);
     register_path += "/" + pkgname;
 
-    qDebug() << "registering:" << appid;
     QDBusConnection bus = QDBusConnection::sessionBus();
 
     // Register to the push client
     QDBusMessage message = QDBusMessage::createMethodCall(PUSH_SERVICE, register_path , PUSH_IFACE, "Register");
-    message << appid;
+    message << appId;
     QDBusMessage token = bus.call(message);
     if (token.type() == QDBusMessage::ErrorMessage) {
-        qDebug() << "Error registering:" << token.errorMessage();
         status = token.errorMessage();
+        emit statusChanged(status);
         // This has to be delayed because the error signal is not connected yet
         QTimer::singleShot(200, this, SLOT(emitError()));
         return;
     }
-    // Usually we would not show this ;-)
-    qDebug() << "token" << token.arguments()[0].toStringList()[0];
     this->token = token.arguments()[0].toStringList()[0];
 
     // Connect to the notification signal
     QString postal_path(POSTAL_PATH);
     postal_path += "/" + pkgname;
-    qDebug() << postal_path << "-----------";
-    qDebug() << "connecting:" << bus.connect(POSTAL_SERVICE, postal_path, POSTAL_IFACE, "Post", "s", this, SLOT(notified(QString)));
+    bus.connect(POSTAL_SERVICE, postal_path, POSTAL_IFACE, "Post", "s", this, SLOT(notified(QString)));
 
     // Do an initial fetch
     QTimer::singleShot(200, this, SLOT(getNotifications()));
+    emit tokenChanged(this->token);
+}
+
+QString PushClient::getAppId() {
+    return appId;
+}
+
+QString PushClient::getToken() {
+    return token;
 }
 
 void PushClient::emitError()
@@ -60,7 +68,6 @@ void PushClient::emitError()
 
 void PushClient::notified(QString)
 {
-    qDebug() <<  "Notified";
     this->getNotifications();
 }
 
@@ -71,12 +78,55 @@ void PushClient::getNotifications() {
     QString path(POSTAL_PATH);
     path += "/" + pkgname;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "PopAll");
-    message << this->appid;
+    message << this->appId;
     QDBusMessage reply = bus.call(message);
     if (reply.type() == QDBusMessage::ErrorMessage) {
-        qDebug() << "Error fetching notifications:" << reply.errorMessage();
         emit error(reply.errorMessage());
     }
-    qDebug() << "notifications:" << reply.arguments()[0].toStringList();
-    emit newNotifications(reply.arguments()[0].toStringList());
+    emit notificationsChanged(reply.arguments()[0].toStringList());
+}
+
+QStringList PushClient::getPersistent() {
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    QString path(POSTAL_PATH);
+    path += "/" + pkgname;
+    QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "ListPersistent");
+    message << this->appId;
+    QDBusMessage reply = bus.call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage) {
+        emit error(reply.errorMessage());
+    }
+    return reply.arguments()[0].toStringList();
+}
+
+void PushClient::clearPersistent(QStringList tags) {
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    QString path(POSTAL_PATH);
+    path += "/" + pkgname;
+    QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "ClearPersistent");
+    message << this->appId << tags;
+    QDBusMessage reply = bus.call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage) {
+        emit error(reply.errorMessage());
+    }
+    emit persistentChanged(getPersistent());
+}
+
+void PushClient::setCount(int count) {
+    QDBusConnection bus = QDBusConnection::sessionBus();
+    QString path(POSTAL_PATH);
+    bool visible = count != 0;
+    counter = count;
+    path += "/" + pkgname;
+    QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "setCounter");
+    message << this->appId << count << visible;
+    QDBusMessage reply = bus.call(message);
+    if (reply.type() == QDBusMessage::ErrorMessage) {
+        emit error(reply.errorMessage());
+    }
+    emit countChanged(counter);
+}
+
+int PushClient::getCount() {
+    return counter;
 }

@@ -1,3 +1,0 @@
-qtdeclarative5-ubuntu-push-notifications-plugin: pkg-has-shlibs-control-file-but-no-actual-shared-libs
-qtdeclarative5-ubuntu-push-notifications-plugin: postinst-has-useless-call-to-ldconfig
-qtdeclarative5-ubuntu-push-notifications-plugin: postrm-has-useless-call-to-ldconfig

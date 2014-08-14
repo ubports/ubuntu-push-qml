@@ -18,11 +18,11 @@ Build-Depends: cmake (>= 2.8.9),
                qtdeclarative5-test-plugin,
                qtdeclarative5-ubuntu-ui-toolkit-plugin,
                xvfb,
-Standards-Version: 3.9.4
+Standards-Version: 3.9.5
 Homepage: https://launchpad.net/ubuntu-push-qml
 Vcs-Bzr: https://code.launchpad.net/~ubuntu-push-hackers/ubuntu-push-qml/trunk
 
-Package: qtdeclarative5-ubuntu-push-notifications-plugin
+Package: qtdeclarative5-ubuntu-push-plugin
 Architecture: any
 Multi-Arch: same
 Depends: ${misc:Depends},

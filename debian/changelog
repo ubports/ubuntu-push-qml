@@ -1,3 +1,14 @@
+ubuntu-push-qml (0.1+14.10.20140812-0ubuntu1) utopic; urgency=low
+
+  [ Roberto Alsina ]
+  * Make the example a click app, API updates, removed translation, made
+    app pure QML/JS.
+
+  [ Christian Dywan ]
+  * Initial commit
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Tue, 12 Aug 2014 14:55:23 +0000
+
 ubuntu-push-qml (0.1-0ubuntu1) utopic; urgency=low
 
   [ Christian Dywan ]

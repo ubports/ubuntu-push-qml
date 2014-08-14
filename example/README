@@ -14,7 +14,7 @@ to be used in the emulator or on a real device.
 
 This is more complicated but may be convenient while experimenting:
 
-* Install qtdeclarative5-ubuntu-push-notifications-plugin
+* Install qtdeclarative5-ubuntu-push-plugin
 * Install ubuntu-push-client
 * Run ubuntu-push-client in trivial helper mode:
 

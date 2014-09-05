@@ -32,7 +32,6 @@ public:
     QString getAppId();
     QString getToken();
     QStringList getPersistent();
-    void clearPersistent(QStringList tags);
     void setCount(int count);
     int getCount();
 
@@ -56,6 +55,7 @@ public slots:
     void getNotifications();
     void notified(QString appId);
     void emitError();
+    void clearPersistent(QStringList tags);
 
 private:
     QString appId;

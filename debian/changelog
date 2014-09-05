@@ -1,3 +1,10 @@
+ubuntu-push-qml (0.1+14.10.20140905-0ubuntu1) utopic; urgency=low
+
+  [ Roberto Alsina ]
+  * Mark clearNotifications as a slot and make it usable from QML
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Fri, 05 Sep 2014 13:56:16 +0000
+
 ubuntu-push-qml (0.1+14.10.20140814.2-0ubuntu1) utopic; urgency=low
 
   [ Roberto Alsina ]

@@ -122,8 +122,8 @@ void PushClient::clearPersistent(QStringList tags) {
     path += "/" + pkgname;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "ClearPersistent");
     message << this->appId;
-    for (const QString &tag: tags) {
-		message << tag;
+    for (int i = 0; i < tags.size(); ++i) {
+		message << tags.at(i);
 	}
     QDBusMessage reply = bus.call(message);
     if (reply.type() == QDBusMessage::ErrorMessage) {

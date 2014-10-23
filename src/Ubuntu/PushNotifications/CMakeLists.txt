@@ -10,7 +10,6 @@ set(QML_IMPORT PushNotifications)
 set(IMPORTS_DIR "${QT_INSTALL_QML}/Ubuntu/${QML_IMPORT}")
 set(PLUGIN Ubuntu${QML_IMPORT})
 set(PLUGIN_SRC plugin.cpp pushclient.cpp)
-list( APPEND CMAKE_CXX_FLAGS "-std=c++0x ${CMAKE_CXX_FLAGS}")
 
 add_library(${PLUGIN} MODULE ${PLUGIN_SRC})
 

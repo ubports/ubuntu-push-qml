@@ -44,8 +44,8 @@ public:
 
 signals:
     void countChanged(int count);
-    void notificationsChanged(const QStringList &notification);
-    void persistentChanged(const QStringList &persistent);
+    void notificationsChanged(const QStringList &notifications);
+    void persistentChanged(const QStringList &tags);
     void appIdChanged(const QString &appId);
     void error(const QString &error);
     void tokenChanged(const QString &token);

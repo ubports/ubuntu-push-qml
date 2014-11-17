@@ -32,7 +32,7 @@ PushClient::PushClient(QObject *parent) :
 {
 }
 
-void PushClient::registerApp(QString appId) {
+void PushClient::registerApp(const QString &appId) {
     if (appId == this->appId || appId == "")
         return;
 
@@ -83,7 +83,7 @@ void PushClient::emitError()
     emit error(status);
 }
 
-void PushClient::notified(QString)
+void PushClient::notified(const QString &)
 {
     this->getNotifications();
 }
@@ -116,7 +116,7 @@ QStringList PushClient::getPersistent() {
     return reply.arguments()[0].toStringList();
 }
 
-void PushClient::clearPersistent(QStringList tags) {
+void PushClient::clearPersistent(const QStringList &tags) {
     QDBusConnection bus = QDBusConnection::sessionBus();
     QString path(POSTAL_PATH);
     path += "/" + pkgname;

@@ -27,7 +27,7 @@ class PushClient : public QObject
     Q_OBJECT
 public:
     explicit PushClient(QObject *parent = 0);
-    void registerApp(QString appid);
+    void registerApp(const QString &appid);
     QString getStatus() {return this->status;};
     QString getAppId();
     QString getToken();
@@ -43,19 +43,19 @@ public:
     Q_PROPERTY(int count READ getCount WRITE setCount NOTIFY countChanged)
 
 signals:
-    void countChanged(int);
-    void notificationsChanged(QStringList);
-    void persistentChanged(QStringList);
-    void appIdChanged(QString);
-    void error(QString);
-    void tokenChanged(QString);
-    void statusChanged(QString);
+    void countChanged(int count);
+    void notificationsChanged(const QStringList &notifications);
+    void persistentChanged(const QStringList &tags);
+    void appIdChanged(const QString &appId);
+    void error(const QString &error);
+    void tokenChanged(const QString &token);
+    void statusChanged(const QString &status);
 
 public slots:
     void getNotifications();
-    void notified(QString appId);
+    void notified(const QString &appId);
     void emitError();
-    void clearPersistent(QStringList tags);
+    void clearPersistent(const QStringList &tags);
 
 private:
     QString appId;

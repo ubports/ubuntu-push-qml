@@ -62,6 +62,7 @@ public slots:
 private slots:
     void registerFinished(QDBusPendingCallWatcher *watcher);
     void popAllFinished(QDBusPendingCallWatcher *watcher);
+    void setCounterFinished(QDBusPendingCallWatcher *watcher);
 
 private:
     QString appId;

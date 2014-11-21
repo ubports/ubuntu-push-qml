@@ -99,8 +99,6 @@ void PushClient::notified(const QString &)
 
 void PushClient::getNotifications() {
     QDBusConnection bus = QDBusConnection::sessionBus();
-
-    // FIXME: make async using http://qt-project.org/doc/qt-4.8/qdbusconnection.html#asyncCall
     QString path(POSTAL_PATH);
     path += "/" + pkgname;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "PopAll");
@@ -158,11 +156,20 @@ void PushClient::setCount(int count) {
     path += "/" + pkgname;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "setCounter");
     message << this->appId << count << visible;
-    QDBusMessage reply = bus.call(message);
-    if (reply.type() == QDBusMessage::ErrorMessage) {
-        emit error(reply.errorMessage());
+    QDBusPendingCall pcall = bus.asyncCall(message);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
+    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+                  this, SLOT(setCounterFinished(QDBusPendingCallWatcher*)));
+}
+
+void PushClient::setCounterFinished(QDBusPendingCallWatcher *watcher) {
+    QDBusPendingReply<void> reply = *watcher;
+    if (reply.isError()) {
+        emit error(reply.error().message());
     }
-    emit countChanged(counter);
+    else {
+        emit countChanged(counter);
+    }
 }
 
 int PushClient::getCount() {

@@ -60,7 +60,7 @@ public slots:
     void clearPersistent(const QStringList &tags);
 
 private slots:
-    void registerFinishedSlot(QDBusPendingCallWatcher *watcher);
+    void registerFinished(QDBusPendingCallWatcher *watcher);
 
 private:
     QString appId;

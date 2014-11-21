@@ -55,7 +55,7 @@ void PushClient::registerApp(const QString &appId) {
     QDBusPendingCall pcall = bus.asyncCall(message);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
     QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-                  this, SLOT(registerFinishedSlot(QDBusPendingCallWatcher*)));
+                  this, SLOT(registerFinished(QDBusPendingCallWatcher*)));
 
     // Connect to the notification signal
     QString postal_path(POSTAL_PATH);
@@ -63,21 +63,20 @@ void PushClient::registerApp(const QString &appId) {
     bus.connect(POSTAL_SERVICE, postal_path, POSTAL_IFACE, "Post", "s", this, SLOT(notified(QString)));
 }
 
-void PushClient::registerFinishedSlot(QDBusPendingCallWatcher *watcher) {
+void PushClient::registerFinished(QDBusPendingCallWatcher *watcher) {
     QDBusPendingReply<QString> reply = *watcher;
     if (reply.isError()) {
         status = reply.error().message();
         emit statusChanged(status);
         // This has to be delayed because the error signal is not connected yet
         QTimer::singleShot(200, this, SLOT(emitError()));
-        return;
     }
-    this->token = reply.value();
-
-
-    // Do an initial fetch
-    QTimer::singleShot(200, this, SLOT(getNotifications()));
-    emit tokenChanged(this->token);
+    else {
+        this->token = reply.value();
+        // Do an initial fetch
+        QTimer::singleShot(200, this, SLOT(getNotifications()));
+        emit tokenChanged(this->token);
+    }
 }
 
 QString PushClient::getAppId() {

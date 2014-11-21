@@ -105,11 +105,20 @@ void PushClient::getNotifications() {
     path += "/" + pkgname;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "PopAll");
     message << this->appId;
-    QDBusMessage reply = bus.call(message);
-    if (reply.type() == QDBusMessage::ErrorMessage) {
-        emit error(reply.errorMessage());
+    QDBusPendingCall pcall = bus.asyncCall(message);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
+    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+                  this, SLOT(popAllFinished(QDBusPendingCallWatcher*)));
+}
+
+void PushClient::popAllFinished(QDBusPendingCallWatcher *watcher) {
+    QDBusPendingReply<QStringList> reply = *watcher;
+    if (reply.isError()) {
+        emit error(reply.error().message());
     }
-    emit notificationsChanged(reply.arguments()[0].toStringList());
+    else {
+        emit notificationsChanged(reply.value());
+    }
 }
 
 QStringList PushClient::getPersistent() {

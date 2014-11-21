@@ -153,9 +153,10 @@ void PushClient::clearPersistentFinished(QDBusPendingCallWatcher *watcher) {
 
     if (reply.isError()) {
         emit error(reply.error().message());
+    } else {
+        // FIXME: this is blocking
+        emit persistentChanged(getPersistent());
     }
-    // FIXME: this is blocking
-    emit persistentChanged(getPersistent());
 }
 
 void PushClient::setCount(int count) {

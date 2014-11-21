@@ -141,9 +141,17 @@ void PushClient::clearPersistent(const QStringList &tags) {
     for (int i = 0; i < tags.size(); ++i) {
 		message << tags.at(i);
 	}
-    QDBusMessage reply = bus.call(message);
-    if (reply.type() == QDBusMessage::ErrorMessage) {
-        emit error(reply.errorMessage());
+    QDBusPendingCall pcall = bus.asyncCall(message);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
+    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+                  this, SLOT(clearPersistentFinished(QDBusPendingCallWatcher*)));
+}
+
+void PushClient::clearPersistentFinished(QDBusPendingCallWatcher *watcher) {
+    QDBusPendingReply<void> reply = *watcher;
+
+    if (reply.isError()) {
+        emit error(reply.error().message());
     }
     emit persistentChanged(getPersistent());
 }

@@ -1,3 +1,10 @@
+ubuntu-push-qml (0.1+15.04.20141127-0ubuntu1) vivid; urgency=low
+
+  [ Roberto Alsina ]
+  * Make registration async. (LP: #1394734)
+
+ -- Ubuntu daily release <ps-jenkins@lists.canonical.com>  Thu, 27 Nov 2014 17:05:58 +0000
+
 ubuntu-push-qml (0.1+15.04.20141117-0ubuntu1) vivid; urgency=low
 
   [ Michael Zanetti ]

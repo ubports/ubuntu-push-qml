@@ -22,6 +22,8 @@ License along with this program.  If not, see
 #include <QString>
 #include <QStringList>
 
+class QDBusPendingCallWatcher;
+
 class PushClient : public QObject
 {
     Q_OBJECT
@@ -56,6 +58,12 @@ public slots:
     void notified(const QString &appId);
     void emitError();
     void clearPersistent(const QStringList &tags);
+
+private slots:
+    void registerFinished(QDBusPendingCallWatcher *watcher);
+    void popAllFinished(QDBusPendingCallWatcher *watcher);
+    void setCounterFinished(QDBusPendingCallWatcher *watcher);
+    void clearPersistentFinished(QDBusPendingCallWatcher *watcher);
 
 private:
     QString appId;

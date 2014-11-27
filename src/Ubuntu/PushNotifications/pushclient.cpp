@@ -18,6 +18,8 @@ License along with this program.  If not, see
 #include "pushclient.h"
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusMessage>
+#include <QtDBus/QDBusPendingCall>
+#include <QtDBus/QDBusPendingReply>
 #include <QTimer>
 
 #define PUSH_SERVICE "com.ubuntu.PushNotifications"
@@ -50,24 +52,31 @@ void PushClient::registerApp(const QString &appId) {
     // Register to the push client
     QDBusMessage message = QDBusMessage::createMethodCall(PUSH_SERVICE, register_path , PUSH_IFACE, "Register");
     message << appId;
-    QDBusMessage token = bus.call(message);
-    if (token.type() == QDBusMessage::ErrorMessage) {
-        status = token.errorMessage();
-        emit statusChanged(status);
-        // This has to be delayed because the error signal is not connected yet
-        QTimer::singleShot(200, this, SLOT(emitError()));
-        return;
-    }
-    this->token = token.arguments()[0].toStringList()[0];
+    QDBusPendingCall pcall = bus.asyncCall(message);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
+    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+                  this, SLOT(registerFinished(QDBusPendingCallWatcher*)));
 
     // Connect to the notification signal
     QString postal_path(POSTAL_PATH);
     postal_path += "/" + pkgname;
     bus.connect(POSTAL_SERVICE, postal_path, POSTAL_IFACE, "Post", "s", this, SLOT(notified(QString)));
+}
 
-    // Do an initial fetch
-    QTimer::singleShot(200, this, SLOT(getNotifications()));
-    emit tokenChanged(this->token);
+void PushClient::registerFinished(QDBusPendingCallWatcher *watcher) {
+    QDBusPendingReply<QString> reply = *watcher;
+    if (reply.isError()) {
+        status = reply.error().message();
+        emit statusChanged(status);
+        // This has to be delayed because the error signal is not connected yet
+        QTimer::singleShot(200, this, SLOT(emitError()));
+    }
+    else {
+        this->token = reply.value();
+        // Do an initial fetch
+        QTimer::singleShot(200, this, SLOT(getNotifications()));
+        emit tokenChanged(this->token);
+    }
 }
 
 QString PushClient::getAppId() {
@@ -90,20 +99,28 @@ void PushClient::notified(const QString &)
 
 void PushClient::getNotifications() {
     QDBusConnection bus = QDBusConnection::sessionBus();
-
-    // FIXME: make async using http://qt-project.org/doc/qt-4.8/qdbusconnection.html#asyncCall
     QString path(POSTAL_PATH);
     path += "/" + pkgname;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "PopAll");
     message << this->appId;
-    QDBusMessage reply = bus.call(message);
-    if (reply.type() == QDBusMessage::ErrorMessage) {
-        emit error(reply.errorMessage());
+    QDBusPendingCall pcall = bus.asyncCall(message);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
+    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+                  this, SLOT(popAllFinished(QDBusPendingCallWatcher*)));
+}
+
+void PushClient::popAllFinished(QDBusPendingCallWatcher *watcher) {
+    QDBusPendingReply<QStringList> reply = *watcher;
+    if (reply.isError()) {
+        emit error(reply.error().message());
     }
-    emit notificationsChanged(reply.arguments()[0].toStringList());
+    else {
+        emit notificationsChanged(reply.value());
+    }
 }
 
 QStringList PushClient::getPersistent() {
+    // FIXME: this is blocking, but making it async would change the API
     QDBusConnection bus = QDBusConnection::sessionBus();
     QString path(POSTAL_PATH);
     path += "/" + pkgname;
@@ -125,11 +142,21 @@ void PushClient::clearPersistent(const QStringList &tags) {
     for (int i = 0; i < tags.size(); ++i) {
 		message << tags.at(i);
 	}
-    QDBusMessage reply = bus.call(message);
-    if (reply.type() == QDBusMessage::ErrorMessage) {
-        emit error(reply.errorMessage());
+    QDBusPendingCall pcall = bus.asyncCall(message);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
+    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+                  this, SLOT(clearPersistentFinished(QDBusPendingCallWatcher*)));
+}
+
+void PushClient::clearPersistentFinished(QDBusPendingCallWatcher *watcher) {
+    QDBusPendingReply<void> reply = *watcher;
+
+    if (reply.isError()) {
+        emit error(reply.error().message());
+    } else {
+        // FIXME: this is blocking
+        emit persistentChanged(getPersistent());
     }
-    emit persistentChanged(getPersistent());
 }
 
 void PushClient::setCount(int count) {
@@ -140,11 +167,20 @@ void PushClient::setCount(int count) {
     path += "/" + pkgname;
     QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "setCounter");
     message << this->appId << count << visible;
-    QDBusMessage reply = bus.call(message);
-    if (reply.type() == QDBusMessage::ErrorMessage) {
-        emit error(reply.errorMessage());
+    QDBusPendingCall pcall = bus.asyncCall(message);
+    QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
+    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
+                  this, SLOT(setCounterFinished(QDBusPendingCallWatcher*)));
+}
+
+void PushClient::setCounterFinished(QDBusPendingCallWatcher *watcher) {
+    QDBusPendingReply<void> reply = *watcher;
+    if (reply.isError()) {
+        emit error(reply.error().message());
     }
-    emit countChanged(counter);
+    else {
+        emit countChanged(counter);
+    }
 }
 
 int PushClient::getCount() {

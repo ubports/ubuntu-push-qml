@@ -165,7 +165,7 @@ void PushClient::setCount(int count) {
     bool visible = count != 0;
     counter = count;
     path += "/" + pkgname;
-    QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "setCounter");
+    QDBusMessage message = QDBusMessage::createMethodCall(POSTAL_SERVICE, path, POSTAL_IFACE, "SetCounter");
     message << this->appId << count << visible;
     QDBusPendingCall pcall = bus.asyncCall(message);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);

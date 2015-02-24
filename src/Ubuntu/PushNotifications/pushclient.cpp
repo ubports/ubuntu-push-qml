@@ -77,6 +77,7 @@ void PushClient::registerFinished(QDBusPendingCallWatcher *watcher) {
         QTimer::singleShot(200, this, SLOT(getNotifications()));
         emit tokenChanged(this->token);
     }
+    watcher.deleteLater();
 }
 
 QString PushClient::getAppId() {
@@ -117,6 +118,7 @@ void PushClient::popAllFinished(QDBusPendingCallWatcher *watcher) {
     else {
         emit notificationsChanged(reply.value());
     }
+    watcher.deleteLater();
 }
 
 QStringList PushClient::getPersistent() {

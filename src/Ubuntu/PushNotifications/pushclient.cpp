@@ -29,20 +29,46 @@ License along with this program.  If not, see
 #define PUSH_IFACE "com.ubuntu.PushNotifications"
 #define POSTAL_IFACE "com.ubuntu.Postal"
 
+using ubuntu::connectivity::NetworkingStatus;
+
 PushClient::PushClient(QObject *parent) :
-    QObject(parent)
+    QObject(parent),
+    ns(new NetworkingStatus())
 {
 }
 
-void PushClient::registerApp(const QString &appId) {
-    if (appId == this->appId || appId == "")
+void PushClient::setAppId(const QString &appId) {
+    if (appId == this->appId || appId.isEmpty())
         return;
 
     this->appId = appId;
+    emit appIdChanged(appId);
+
+    if (ns->status() == NetworkingStatus::Online) {
+        registerApp();
+    }
+    else {
+        QObject::disconnect(ns.data());
+        QObject::connect(ns.data(), SIGNAL(statusChanged(NetworkingStatus::Status)),
+                         this, SLOT(connectionStatusChanged(NetworkingStatus::Status)));
+    }
+}
+
+void PushClient::connectionStatusChanged(NetworkingStatus::Status status)
+{
+    if (status == NetworkingStatus::Online) {
+        QObject::disconnect(ns.data());
+        registerApp();
+    }
+}
+
+void PushClient::registerApp()
+{
+    if (appId.isEmpty())
+        return;
 
     pkgname = appId.split("_").at(0);
     pkgname = pkgname.replace(".","_2e").replace("-","_2d");
-    emit appIdChanged(appId);
 
     QString register_path(PUSH_PATH);
     register_path += "/" + pkgname;

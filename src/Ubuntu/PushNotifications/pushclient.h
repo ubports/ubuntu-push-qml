@@ -21,6 +21,7 @@ License along with this program.  If not, see
 #include <QObject>
 #include <QString>
 #include <QStringList>
+#include <ubuntu/connectivity/networking-status.h>
 
 class QDBusPendingCallWatcher;
 
@@ -29,7 +30,7 @@ class PushClient : public QObject
     Q_OBJECT
 public:
     explicit PushClient(QObject *parent = 0);
-    void registerApp(const QString &appid);
+    void setAppId(const QString &appid);
     QString getStatus() {return this->status;};
     QString getAppId();
     QString getToken();
@@ -37,7 +38,7 @@ public:
     void setCount(int count);
     int getCount();
 
-    Q_PROPERTY(QString appId WRITE registerApp READ getAppId NOTIFY appIdChanged);
+    Q_PROPERTY(QString appId WRITE setAppId READ getAppId NOTIFY appIdChanged);
     Q_PROPERTY(QString token READ getToken NOTIFY tokenChanged);
     Q_PROPERTY(QStringList notifications NOTIFY notificationsChanged);
     Q_PROPERTY(QString status READ getStatus NOTIFY statusChanged);
@@ -64,8 +65,12 @@ private slots:
     void popAllFinished(QDBusPendingCallWatcher *watcher);
     void setCounterFinished(QDBusPendingCallWatcher *watcher);
     void clearPersistentFinished(QDBusPendingCallWatcher *watcher);
+    void connectionStatusChanged(ubuntu::connectivity::NetworkingStatus::Status);
 
 private:
+    void registerApp();
+
+    QScopedPointer<ubuntu::connectivity::NetworkingStatus> ns;
     QString appId;
     QString pkgname;
     QString token;

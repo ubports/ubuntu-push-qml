@@ -15,6 +15,9 @@ add_library(${PLUGIN} MODULE ${PLUGIN_SRC})
 
 qt5_use_modules(${PLUGIN} Core Gui Qml DBus)
 
+include_directories(${CONNECTIVITY_INCLUDE_DIRS})
+target_link_libraries(${PLUGIN} ${CONNECTIVITY_LDFLAGS})
+
 file(GLOB QML_FILES RELATIVE ${CMAKE_CURRENT_SOURCE_DIR} *.qml qmldir *.js)
 install(TARGETS ${PLUGIN} DESTINATION ${IMPORTS_DIR})
 install(FILES ${QML_FILES} DESTINATION ${IMPORTS_DIR})

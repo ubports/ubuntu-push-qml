@@ -34,6 +34,9 @@ find_package(Qt5Sql REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(Qt5Quick REQUIRED)
 
+find_package (PkgConfig)
+pkg_check_modules (CONNECTIVITY REQUIRED connectivity-qt1)
+
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)
 

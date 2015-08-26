@@ -1,3 +1,14 @@
+ubuntu-push-qml (0.1+15.10.20150826.1-0ubuntu1) wily; urgency=medium
+
+  [ CI Train Bot ]
+  * New rebuild forced.
+
+  [ Marco Trevisan (Treviño) ]
+  * PushClient: only try to register if we're currently connected, or
+    wait for connection (LP: #1430836)
+
+ -- CI Train Bot <ci-train-bot@canonical.com>  Wed, 26 Aug 2015 16:34:41 +0000
+
 ubuntu-push-qml (0.1+15.04.20150312-0ubuntu1) vivid; urgency=medium
 
   [ Roberto Alsina ]

@@ -21,7 +21,7 @@ License along with this program.  If not, see
 #include <QObject>
 #include <QString>
 #include <QStringList>
-#include <ubuntu/connectivity/networking-status.h>
+#include <connectivityqt/connectivity.h>
 
 class QDBusPendingCallWatcher;
 
@@ -65,12 +65,12 @@ private slots:
     void popAllFinished(QDBusPendingCallWatcher *watcher);
     void setCounterFinished(QDBusPendingCallWatcher *watcher);
     void clearPersistentFinished(QDBusPendingCallWatcher *watcher);
-    void connectionStatusChanged(ubuntu::connectivity::NetworkingStatus::Status);
+    void connectionStatusChanged(bool status);
 
 private:
     void registerApp();
 
-    QScopedPointer<ubuntu::connectivity::NetworkingStatus> ns;
+    QScopedPointer<connectivityqt::Connectivity> ns;
     QString appId;
     QString pkgname;
     QString token;

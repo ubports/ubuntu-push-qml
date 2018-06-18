@@ -21,6 +21,7 @@ License along with this program.  If not, see
 #include <QtDBus/QDBusPendingCall>
 #include <QtDBus/QDBusPendingReply>
 #include <QTimer>
+#include <QDebug>
 
 #define PUSH_SERVICE "com.ubuntu.PushNotifications"
 #define POSTAL_SERVICE "com.ubuntu.Postal"

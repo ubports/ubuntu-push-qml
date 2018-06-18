@@ -30,11 +30,9 @@ License along with this program.  If not, see
 #define PUSH_IFACE "com.ubuntu.PushNotifications"
 #define POSTAL_IFACE "com.ubuntu.Postal"
 
-using ubuntu::connectivity::NetworkingStatus;
-
 PushClient::PushClient(QObject *parent) :
     QObject(parent),
-    ns(new NetworkingStatus())
+    ns(new connectivityqt::Connectivity(QDBusConnection::sessionBus(), this))
 {
 }
 
@@ -47,21 +45,21 @@ void PushClient::setAppId(const QString &appId) {
 
     qDebug() << this->appId;
 
-    if (ns->status() == NetworkingStatus::Online) {
+    if (ns->online()) {
         registerApp();
 	qDebug() << " Online!";
     }
     else {
 	qDebug() << "Not ONLINE!";
         QObject::disconnect(ns.data());
-        QObject::connect(ns.data(), SIGNAL(statusChanged(NetworkingStatus::Status)),
-                         this, SLOT(connectionStatusChanged(NetworkingStatus::Status)));
+        QObject::connect(ns.data(), SIGNAL(onlineUpdated(bool status)),
+                         this, SLOT(connectionStatusChanged(bool status)));
     }
 }
 
-void PushClient::connectionStatusChanged(NetworkingStatus::Status status)
+void PushClient::connectionStatusChanged(bool status)
 {
-    if (status == NetworkingStatus::Online) {
+    if (status) {
         QObject::disconnect(ns.data());
         registerApp();
     }

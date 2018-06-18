@@ -17,6 +17,7 @@ Build-Depends: cmake (>= 2.8.9),
                qtdeclarative5-qtquick2-plugin,
                qtdeclarative5-test-plugin,
                qtdeclarative5-ubuntu-ui-toolkit-plugin,
+               libunity-api-dev,
                xvfb,
 Standards-Version: 3.9.5
 Homepage: https://launchpad.net/ubuntu-push-qml

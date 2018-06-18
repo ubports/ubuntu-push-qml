@@ -38,7 +38,7 @@ PushClient::PushClient(QObject *parent) :
 }
 
 void PushClient::setAppId(const QString &appId) {
-    if (appId == this->appId || appId.isEmpty())
+    if (appId == this->appId)
         return;
 
     this->appId = appId;

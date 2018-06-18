@@ -1,3 +1,9 @@
+ubuntu-push-qml (0.2+ubports) xenial; urgency=medium
+
+  * Imported to UBports
+
+ -- UBports auto importer <infra@ubports.com>  Mon, 18 Jun 2018 15:16:12 +0200
+
 ubuntu-push-qml (0.1+15.10.20150826.1-0ubuntu1) wily; urgency=medium
 
   [ CI Train Bot ]

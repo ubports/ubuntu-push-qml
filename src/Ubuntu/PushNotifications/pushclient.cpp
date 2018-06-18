@@ -49,8 +49,10 @@ void PushClient::setAppId(const QString &appId) {
 
     if (ns->status() == NetworkingStatus::Online) {
         registerApp();
+	qDebug() << " Online!";
     }
     else {
+	qDebug() << "Not ONLINE!";
         QObject::disconnect(ns.data());
         QObject::connect(ns.data(), SIGNAL(statusChanged(NetworkingStatus::Status)),
                          this, SLOT(connectionStatusChanged(NetworkingStatus::Status)));

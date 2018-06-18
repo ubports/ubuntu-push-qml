@@ -44,6 +44,8 @@ void PushClient::setAppId(const QString &appId) {
     this->appId = appId;
     emit appIdChanged(appId);
 
+    qDebug() << this->appId;
+
     if (ns->status() == NetworkingStatus::Online) {
         registerApp();
     }
@@ -64,6 +66,8 @@ void PushClient::connectionStatusChanged(NetworkingStatus::Status status)
 
 void PushClient::registerApp()
 {
+    qDebug() << this->appId;
+
     if (appId.isEmpty())
         return;
 
@@ -125,6 +129,7 @@ void PushClient::notified(const QString &)
 }
 
 void PushClient::getNotifications() {
+qDebug() << this->appId;
     QDBusConnection bus = QDBusConnection::sessionBus();
     QString path(POSTAL_PATH);
     path += "/" + pkgname;
@@ -148,6 +153,7 @@ void PushClient::popAllFinished(QDBusPendingCallWatcher *watcher) {
 }
 
 QStringList PushClient::getPersistent() {
+qDebug() << this->appId;
     // FIXME: this is blocking, but making it async would change the API
     QDBusConnection bus = QDBusConnection::sessionBus();
     QString path(POSTAL_PATH);
@@ -162,6 +168,8 @@ QStringList PushClient::getPersistent() {
 }
 
 void PushClient::clearPersistent(const QStringList &tags) {
+qDebug() << this->appId;
+
     QDBusConnection bus = QDBusConnection::sessionBus();
     QString path(POSTAL_PATH);
     path += "/" + pkgname;
@@ -188,6 +196,7 @@ void PushClient::clearPersistentFinished(QDBusPendingCallWatcher *watcher) {
 }
 
 void PushClient::setCount(int count) {
+qDebug() << this->appId;
     QDBusConnection bus = QDBusConnection::sessionBus();
     QString path(POSTAL_PATH);
     bool visible = count != 0;

@@ -31,18 +31,18 @@ class PushClient : public QObject
 public:
     explicit PushClient(QObject *parent = 0);
     void setAppId(const QString &appid);
-    QString getStatus() {return this->status;};
+    QString getStatus() {return this->status;}
     QString getAppId();
     QString getToken();
     QStringList getPersistent();
     void setCount(int count);
     int getCount();
 
-    Q_PROPERTY(QString appId WRITE setAppId READ getAppId NOTIFY appIdChanged);
-    Q_PROPERTY(QString token READ getToken NOTIFY tokenChanged);
-    Q_PROPERTY(QStringList notifications NOTIFY notificationsChanged);
-    Q_PROPERTY(QString status READ getStatus NOTIFY statusChanged);
-    Q_PROPERTY(QStringList persistent READ getPersistent NOTIFY persistentChanged);
+    Q_PROPERTY(QString appId WRITE setAppId READ getAppId NOTIFY appIdChanged)
+    Q_PROPERTY(QString token READ getToken NOTIFY tokenChanged)
+    Q_PROPERTY(QStringList notifications MEMBER notifications NOTIFY notificationsChanged)
+    Q_PROPERTY(QString status READ getStatus NOTIFY statusChanged)
+    Q_PROPERTY(QStringList persistent READ getPersistent NOTIFY persistentChanged)
     Q_PROPERTY(int count READ getCount WRITE setCount NOTIFY countChanged)
 
 signals:

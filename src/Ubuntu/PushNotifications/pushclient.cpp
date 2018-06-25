@@ -44,18 +44,16 @@ void PushClient::setAppId(const QString &appId) {
 
     if (ns->online()) {
         registerApp();
-    }
-    else {
-        QObject::disconnect(ns.data());
-        QObject::connect(ns.data(), SIGNAL(onlineUpdated(bool status)),
-                         this, SLOT(connectionStatusChanged(bool status)));
+    } else {
+        disconnect(ns.data(), 0, this, 0);
+        connect(ns.data(), &connectivityqt::Connectivity::onlineUpdated, this, &PushClient::connectionStatusChanged);
     }
 }
 
 void PushClient::connectionStatusChanged(bool status)
 {
     if (status) {
-        QObject::disconnect(ns.data());
+        disconnect(ns.data(), 0, this, 0);
         registerApp();
     }
 }
@@ -78,8 +76,7 @@ void PushClient::registerApp()
     message << appId;
     QDBusPendingCall pcall = bus.asyncCall(message);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
-    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-                  this, SLOT(registerFinished(QDBusPendingCallWatcher*)));
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, &PushClient::registerFinished);
 
     // Connect to the notification signal
     QString postal_path(POSTAL_PATH);
@@ -93,12 +90,12 @@ void PushClient::registerFinished(QDBusPendingCallWatcher *watcher) {
         status = reply.error().message();
         emit statusChanged(status);
         // This has to be delayed because the error signal is not connected yet
-        QTimer::singleShot(200, this, SLOT(emitError()));
+        QTimer::singleShot(200, this, &PushClient::emitError);
     }
     else {
         this->token = reply.value();
         // Do an initial fetch
-        QTimer::singleShot(200, this, SLOT(getNotifications()));
+        QTimer::singleShot(200, this, &PushClient::getNotifications);
         emit tokenChanged(this->token);
     }
     watcher->deleteLater();
@@ -130,8 +127,7 @@ void PushClient::getNotifications() {
     message << this->appId;
     QDBusPendingCall pcall = bus.asyncCall(message);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
-    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-                  this, SLOT(popAllFinished(QDBusPendingCallWatcher*)));
+    connect(watcher, &QDBusPendingCallWatcher::finished,this, &PushClient::popAllFinished);
 }
 
 void PushClient::popAllFinished(QDBusPendingCallWatcher *watcher) {
@@ -170,8 +166,7 @@ void PushClient::clearPersistent(const QStringList &tags) {
 	}
     QDBusPendingCall pcall = bus.asyncCall(message);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
-    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-                  this, SLOT(clearPersistentFinished(QDBusPendingCallWatcher*)));
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, &PushClient::clearPersistentFinished);
 }
 
 void PushClient::clearPersistentFinished(QDBusPendingCallWatcher *watcher) {
@@ -195,8 +190,7 @@ void PushClient::setCount(int count) {
     message << this->appId << count << visible;
     QDBusPendingCall pcall = bus.asyncCall(message);
     QDBusPendingCallWatcher *watcher = new QDBusPendingCallWatcher(pcall, this);
-    QObject::connect(watcher, SIGNAL(finished(QDBusPendingCallWatcher*)),
-                  this, SLOT(setCounterFinished(QDBusPendingCallWatcher*)));
+    connect(watcher, &QDBusPendingCallWatcher::finished, this, &PushClient::setCounterFinished);
 }
 
 void PushClient::setCounterFinished(QDBusPendingCallWatcher *watcher) {
